@@ -1,0 +1,101 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Dashboard | Consultorio de Dietética{% endblock %}
+{% block header_title %}Panel General del Consultorio{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Pacientes Registrados</span>
+        <strong class="stat-value">{{ total_pacientes }}</strong>
+        <a href="{% url 'paciente_list' %}" class="stat-link">Ver pacientes &rarr;</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Consultas Totales</span>
+        <strong class="stat-value">{{ total_consultas }}</strong>
+        <a href="{% url 'consulta_list' %}" class="stat-link">Ver consultas &rarr;</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Planes Nutricionales</span>
+        <strong class="stat-value">{{ total_planes }}</strong>
+        <a href="{% url 'plan_list' %}" class="stat-link">Ver planes &rarr;</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Alimentos Catalogados</span>
+        <strong class="stat-value">{{ total_alimentos }}</strong>
+        <a href="{% url 'alimento_list' %}" class="stat-link">Ver alimentos &rarr;</a>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Nutricionistas Activos</span>
+        <strong class="stat-value">{{ total_nutricionistas }}</strong>
+        <a href="{% url 'nutricionista_list' %}" class="stat-link">Ver especialistas &rarr;</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Accesos Rápidos</h3>
+    </div>
+    <div class="actions-bar">
+        <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Nueva Consulta</a>
+        <a href="{% url 'paciente_create' %}" class="btn btn-secondary">+ Registrar Paciente</a>
+        <a href="{% url 'plan_create' %}" class="btn btn-secondary">+ Crear Plan Nutricional</a>
+        <a href="{% url 'alimento_create' %}" class="btn btn-secondary">+ Agregar Alimento</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Últimas Consultas Registradas</h3>
+        <a href="{% url 'consulta_list' %}" class="btn btn-sm btn-outline">Ver todas</a>
+    </div>
+    {% if ultimas_consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Nutricionista</th>
+                        <th>Plan Asignado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in ultimas_consultas %}
+                    <tr>
+                        <td>{{ consulta.fecha_consulta|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'paciente_detail' consulta.paciente.pk %}">
+                                {{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'nutricionista_detail' consulta.nutricionista.pk %}">
+                                Lic. {{ consulta.nutricionista.apellidos }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if consulta.plan_nutricional %}
+                                <a href="{% url 'plan_detail' consulta.plan_nutricional.pk %}">
+                                    {{ consulta.plan_nutricional.nombre }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Sin plan asignado</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></td>
+                        <td>
+                            <a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Detalle</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Aún no hay consultas registradas en el sistema.</p>
+    {% endif %}
+</div>
+{% endblock %}

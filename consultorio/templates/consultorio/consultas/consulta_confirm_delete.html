@@ -1,0 +1,21 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Eliminar Consulta | Consultorio de Dietética{% endblock %}
+{% block header_title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>¿Estás seguro de eliminar esta consulta médica?</h3>
+    <p>
+        Vas a eliminar la consulta de <strong>{{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }}</strong>
+        atendida por <strong>Lic. {{ consulta.nutricionista.apellidos }}</strong> el día
+        <strong>{{ consulta.fecha_consulta|date:"d/m/Y" }}</strong>.
+    </p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar consulta</button>
+        <a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

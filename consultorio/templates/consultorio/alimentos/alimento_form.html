@@ -1,0 +1,36 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}{{ accion }} Alimento | Consultorio de Dietética{% endblock %}
+{% block header_title %}{{ accion }} Alimento{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+    <div class="card-header">
+        <h3>{{ accion }} Alimento al Catálogo</h3>
+        <a href="{% url 'alimento_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+
+    <form method="post" class="styled-form" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Alimento</button>
+            <a href="{% url 'alimento_list' %}" class="btn btn-outline">Volver</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

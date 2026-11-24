@@ -1,0 +1,68 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Consultas Médicas | Consultorio de Dietética{% endblock %}
+{% block header_title %}Administración de Consultas Dietéticas{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Historial General de Consultas ({{ consultas.count }})</h3>
+        <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Programar / Registrar Consulta</a>
+    </div>
+
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Nutricionista</th>
+                        <th>Plan Asignado</th>
+                        <th>Peso / IMC</th>
+                        <th>Costo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td>{{ consulta.fecha_consulta|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'paciente_detail' consulta.paciente.pk %}">
+                                {{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'nutricionista_detail' consulta.nutricionista.pk %}">
+                                Lic. {{ consulta.nutricionista.apellidos }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if consulta.plan_nutricional %}
+                                <a href="{% url 'plan_detail' consulta.plan_nutricional.pk %}">
+                                    {{ consulta.plan_nutricional.nombre }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Sin plan</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ consulta.peso_kg }} kg (IMC: {{ consulta.imc }})</td>
+                        <td>${{ consulta.costo }}</td>
+                        <td><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></td>
+                        <td class="table-actions">
+                            <a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Ver</a>
+                            <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">No hay consultas registradas. Haz clic en "+ Programar / Registrar Consulta".</p>
+    {% endif %}
+</div>
+{% endblock %}

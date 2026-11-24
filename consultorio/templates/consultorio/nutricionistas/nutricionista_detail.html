@@ -1,0 +1,75 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Lic. {{ nutricionista.nombres }} {{ nutricionista.apellidos }}{% endblock %}
+{% block header_title %}Perfil del Nutricionista{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Lic. {{ nutricionista.nombres }} {{ nutricionista.apellidos }}</h3>
+        <div class="actions-bar">
+            <a href="{% url 'nutricionista_update' nutricionista.pk %}" class="btn btn-warning">Editar</a>
+            <a href="{% url 'nutricionista_delete' nutricionista.pk %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'nutricionista_list' %}" class="btn btn-outline">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item"><span>Registro Profesional:</span> <strong>{{ nutricionista.registro_profesional }}</strong></div>
+        <div class="detail-item"><span>Especialidad:</span> <strong>{{ nutricionista.get_especialidad_display }}</strong></div>
+        <div class="detail-item"><span>Teléfono:</span> <strong>{{ nutricionista.telefono }}</strong></div>
+        <div class="detail-item"><span>Correo Institucional:</span> <strong>{{ nutricionista.email }}</strong></div>
+        <div class="detail-item">
+            <span>Estado:</span>
+            <strong>{% if nutricionista.activo %}Activo en consultorio{% else %}Inactivo{% endif %}</strong>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Consultas Atendidas ({{ consultas.count }})</h3>
+    </div>
+
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Plan Asignado</th>
+                        <th>Estado</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td>{{ consulta.fecha_consulta|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'paciente_detail' consulta.paciente.pk %}">
+                                {{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if consulta.plan_nutricional %}
+                                <a href="{% url 'plan_detail' consulta.plan_nutricional.pk %}">
+                                    {{ consulta.plan_nutricional.nombre }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Sin plan</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></td>
+                        <td><a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Ver cita</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Este especialista aún no tiene consultas asignadas.</p>
+    {% endif %}
+</div>
+{% endblock %}

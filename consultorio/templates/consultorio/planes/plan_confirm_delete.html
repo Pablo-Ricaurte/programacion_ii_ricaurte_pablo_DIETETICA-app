@@ -1,0 +1,20 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Eliminar Plan | Consultorio de Dietética{% endblock %}
+{% block header_title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>¿Estás seguro de eliminar este plan nutricional?</h3>
+    <p>
+        Vas a eliminar el plan <strong>{{ plan.nombre }}</strong> ({{ plan.calorias_diarias }} kcal/día).
+        Las consultas que tenían este plan asignado conservarán su historial médico sin el plan.
+    </p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar plan</button>
+        <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

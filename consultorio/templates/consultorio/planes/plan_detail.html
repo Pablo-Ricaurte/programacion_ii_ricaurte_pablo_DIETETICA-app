@@ -1,0 +1,105 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}{{ plan.nombre }} | Plan Nutricional{% endblock %}
+{% block header_title %}Detalle del Plan Nutricional{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>{{ plan.nombre }}</h3>
+        <div class="actions-bar">
+            <a href="{% url 'plan_update' plan.pk %}" class="btn btn-warning">Editar / Asociar Alimentos</a>
+            <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'plan_list' %}" class="btn btn-outline">Volver a planes</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item"><span>Objetivo:</span> <strong>{{ plan.get_objetivo_display }}</strong></div>
+        <div class="detail-item"><span>Meta Calórica:</span> <strong>{{ plan.calorias_diarias }} kcal / día</strong></div>
+        <div class="detail-item"><span>Fecha de inicio:</span> <strong>{{ plan.fecha_inicio|date:"d/m/Y" }}</strong></div>
+        <div class="detail-item"><span>Fecha de finalización:</span> <strong>{{ plan.fecha_fin|date:"d/m/Y" }}</strong></div>
+        <div class="detail-item"><span>Creado por:</span> <strong>{{ plan.creado_por.username }}</strong></div>
+    </div>
+
+    <div class="detail-notes">
+        <h4>Indicaciones y Horarios</h4>
+        <p>{{ plan.indicaciones|linebreaksbr }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Alimentos Incluidos en este Plan ({{ alimentos.count }})</h3>
+        <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-primary">+ Gestionar Alimentos</a>
+    </div>
+
+    {% if alimentos %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Alimento</th>
+                        <th>Grupo</th>
+                        <th>Porción</th>
+                        <th>Calorías</th>
+                        <th>Prot / Carb / Grasas</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alimento in alimentos %}
+                    <tr>
+                        <td><a href="{% url 'alimento_detail' alimento.pk %}"><strong>{{ alimento.nombre }}</strong></a></td>
+                        <td>{{ alimento.get_grupo_alimenticio_display }}</td>
+                        <td>{{ alimento.porcion_gramos }} g</td>
+                        <td>{{ alimento.calorias }} kcal</td>
+                        <td>{{ alimento.proteinas_g }}g / {{ alimento.carbohidratos_g }}g / {{ alimento.grasas_g }}g</td>
+                        <td><a href="{% url 'alimento_detail' alimento.pk %}" class="btn btn-sm btn-outline">Ver ficha</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Este plan aún no tiene alimentos asociados. Haz clic en "Gestionar Alimentos" para seleccionarlos.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Consultas donde se Asignó este Plan ({{ consultas.count }})</h3>
+    </div>
+
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Nutricionista</th>
+                        <th>Consulta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td>{{ consulta.fecha_consulta|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'paciente_detail' consulta.paciente.pk %}">
+                                {{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }}
+                            </a>
+                        </td>
+                        <td>Lic. {{ consulta.nutricionista.apellidos }}</td>
+                        <td><a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Ver cita</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Este plan aún no ha sido asignado en ninguna consulta.</p>
+    {% endif %}
+</div>
+{% endblock %}

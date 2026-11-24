@@ -1,0 +1,56 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Alimentos | Consultorio de Dietética{% endblock %}
+{% block header_title %}Catálogo Nutricional de Alimentos{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Alimentos Registrados ({{ alimentos.count }})</h3>
+        <a href="{% url 'alimento_create' %}" class="btn btn-primary">+ Agregar Alimento</a>
+    </div>
+
+    {% if alimentos %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Alimento</th>
+                        <th>Grupo</th>
+                        <th>Porción</th>
+                        <th>Calorías</th>
+                        <th>Proteínas</th>
+                        <th>Carbohidratos</th>
+                        <th>Grasas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alimento in alimentos %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'alimento_detail' alimento.pk %}">
+                                <strong>{{ alimento.nombre }}</strong>
+                            </a>
+                        </td>
+                        <td>{{ alimento.get_grupo_alimenticio_display }}</td>
+                        <td>{{ alimento.porcion_gramos }} g</td>
+                        <td>{{ alimento.calorias }} kcal</td>
+                        <td>{{ alimento.proteinas_g }} g</td>
+                        <td>{{ alimento.carbohidratos_g }} g</td>
+                        <td>{{ alimento.grasas_g }} g</td>
+                        <td class="table-actions">
+                            <a href="{% url 'alimento_detail' alimento.pk %}" class="btn btn-sm btn-outline">Ver</a>
+                            <a href="{% url 'alimento_update' alimento.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{% url 'alimento_delete' alimento.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">El catálogo de alimentos está vacío.</p>
+    {% endif %}
+</div>
+{% endblock %}

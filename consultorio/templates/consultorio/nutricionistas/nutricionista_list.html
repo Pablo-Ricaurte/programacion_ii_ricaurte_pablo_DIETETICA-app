@@ -1,0 +1,58 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Nutricionistas | Consultorio de Dietética{% endblock %}
+{% block header_title %}Equipo de Nutricionistas{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Nutricionistas Registrados ({{ nutricionistas.count }})</h3>
+        <a href="{% url 'nutricionista_create' %}" class="btn btn-primary">+ Registrar Nutricionista</a>
+    </div>
+
+    {% if nutricionistas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Registro Prof.</th>
+                        <th>Especialista</th>
+                        <th>Especialidad</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nutri in nutricionistas %}
+                    <tr>
+                        <td><strong>{{ nutri.registro_profesional }}</strong></td>
+                        <td>
+                            <a href="{% url 'nutricionista_detail' nutri.pk %}">
+                                Lic. {{ nutri.nombres }} {{ nutri.apellidos }}
+                            </a>
+                        </td>
+                        <td>{{ nutri.get_especialidad_display }}</td>
+                        <td>{{ nutri.telefono }}</td>
+                        <td>
+                            {% if nutri.activo %}
+                                <span class="badge badge-realizada">Activo</span>
+                            {% else %}
+                                <span class="badge badge-cancelada">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-actions">
+                            <a href="{% url 'nutricionista_detail' nutri.pk %}" class="btn btn-sm btn-outline">Ver</a>
+                            <a href="{% url 'nutricionista_update' nutri.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{% url 'nutricionista_delete' nutri.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">No hay nutricionistas registrados en el consultorio.</p>
+    {% endif %}
+</div>
+{% endblock %}

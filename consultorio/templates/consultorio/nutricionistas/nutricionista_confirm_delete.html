@@ -1,0 +1,20 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Eliminar Nutricionista | Consultorio de Dietética{% endblock %}
+{% block header_title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>¿Estás seguro de eliminar a este nutricionista?</h3>
+    <p>
+        Vas a eliminar a <strong>Lic. {{ nutricionista.nombres }} {{ nutricionista.apellidos }}</strong>
+        ({{ nutricionista.registro_profesional }}). Si tiene consultas registradas, el sistema protegerá su historial.
+    </p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        <a href="{% url 'nutricionista_detail' nutricionista.pk %}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

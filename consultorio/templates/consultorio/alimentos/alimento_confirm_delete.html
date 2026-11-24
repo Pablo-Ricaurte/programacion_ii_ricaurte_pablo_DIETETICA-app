@@ -1,0 +1,19 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Eliminar Alimento | Consultorio de Dietética{% endblock %}
+{% block header_title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>¿Estás seguro de eliminar este alimento?</h3>
+    <p>
+        Vas a eliminar <strong>{{ alimento.nombre }}</strong> ({{ alimento.calorias }} kcal) del catálogo nutricional.
+    </p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar alimento</button>
+        <a href="{% url 'alimento_detail' alimento.pk %}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

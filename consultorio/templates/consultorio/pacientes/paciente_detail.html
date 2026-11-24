@@ -1,0 +1,83 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}{{ paciente.apellidos }} {{ paciente.nombres }} | Paciente{% endblock %}
+{% block header_title %}Expediente del Paciente{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>{{ paciente.apellidos }} {{ paciente.nombres }}</h3>
+        <div class="actions-bar">
+            <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-warning">Editar</a>
+            <a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'paciente_list' %}" class="btn btn-outline">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item"><span>Cédula:</span> <strong>{{ paciente.cedula }}</strong></div>
+        <div class="detail-item"><span>Fecha de nacimiento:</span> <strong>{{ paciente.fecha_nacimiento|date:"d/m/Y" }}</strong></div>
+        <div class="detail-item"><span>Sexo:</span> <strong>{{ paciente.get_sexo_display }}</strong></div>
+        <div class="detail-item"><span>Teléfono:</span> <strong>{{ paciente.telefono }}</strong></div>
+        <div class="detail-item"><span>Correo electrónico:</span> <strong>{{ paciente.email|default:"No registrado" }}</strong></div>
+        <div class="detail-item"><span>Registrado por:</span> <strong>{{ paciente.creado_por.username }}</strong></div>
+    </div>
+
+    <div class="detail-notes">
+        <h4>Alergias y Observaciones Clínicas</h4>
+        <p>{{ paciente.alergias_observaciones|default:"Sin alergias ni observaciones registradas." }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Historial de Consultas ({{ consultas.count }})</h3>
+        <a href="{% url 'consulta_create' %}" class="btn btn-sm btn-primary">+ Programar Consulta</a>
+    </div>
+
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Nutricionista</th>
+                        <th>Peso (kg)</th>
+                        <th>IMC</th>
+                        <th>Plan Nutricional</th>
+                        <th>Estado</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td>{{ consulta.fecha_consulta|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'nutricionista_detail' consulta.nutricionista.pk %}">
+                                Lic. {{ consulta.nutricionista.apellidos }}
+                            </a>
+                        </td>
+                        <td>{{ consulta.peso_kg }} kg</td>
+                        <td>{{ consulta.imc }}</td>
+                        <td>
+                            {% if consulta.plan_nutricional %}
+                                <a href="{% url 'plan_detail' consulta.plan_nutricional.pk %}">
+                                    {{ consulta.plan_nutricional.nombre }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Ninguno</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></td>
+                        <td><a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Ver cita</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Este paciente aún no registra consultas médicas.</p>
+    {% endif %}
+</div>
+{% endblock %}

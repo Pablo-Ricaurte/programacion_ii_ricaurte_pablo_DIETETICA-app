@@ -1,0 +1,61 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}{{ alimento.nombre }} | Alimento{% endblock %}
+{% block header_title %}Ficha Nutricional del Alimento{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>{{ alimento.nombre }}</h3>
+        <div class="actions-bar">
+            <a href="{% url 'alimento_update' alimento.pk %}" class="btn btn-warning">Editar</a>
+            <a href="{% url 'alimento_delete' alimento.pk %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'alimento_list' %}" class="btn btn-outline">Volver al catálogo</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item"><span>Grupo alimenticio:</span> <strong>{{ alimento.get_grupo_alimenticio_display }}</strong></div>
+        <div class="detail-item"><span>Porción estándar:</span> <strong>{{ alimento.porcion_gramos }} g</strong></div>
+        <div class="detail-item"><span>Valor energético:</span> <strong>{{ alimento.calorias }} kcal</strong></div>
+        <div class="detail-item"><span>Proteínas:</span> <strong>{{ alimento.proteinas_g }} g</strong></div>
+        <div class="detail-item"><span>Carbohidratos:</span> <strong>{{ alimento.carbohidratos_g }} g</strong></div>
+        <div class="detail-item"><span>Grasas:</span> <strong>{{ alimento.grasas_g }} g</strong></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Planes Nutricionales que Incluyen este Alimento ({{ planes.count }})</h3>
+    </div>
+
+    {% if planes %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre del Plan</th>
+                        <th>Objetivo</th>
+                        <th>Meta Calórica</th>
+                        <th>Vigencia</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in planes %}
+                    <tr>
+                        <td><a href="{% url 'plan_detail' plan.pk %}"><strong>{{ plan.nombre }}</strong></a></td>
+                        <td>{{ plan.get_objetivo_display }}</td>
+                        <td>{{ plan.calorias_diarias }} kcal/día</td>
+                        <td>{{ plan.fecha_inicio|date:"d/m/Y" }} - {{ plan.fecha_fin|date:"d/m/Y" }}</td>
+                        <td><a href="{% url 'plan_detail' plan.pk %}" class="btn btn-sm btn-outline">Ver plan</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Este alimento aún no está asociado a ningún plan nutricional.</p>
+    {% endif %}
+</div>
+{% endblock %}

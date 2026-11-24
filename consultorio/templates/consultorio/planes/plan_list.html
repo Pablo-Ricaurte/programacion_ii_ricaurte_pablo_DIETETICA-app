@@ -1,0 +1,52 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Planes Nutricionales | Consultorio de Dietética{% endblock %}
+{% block header_title %}Planes Nutricionales{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Planes Disponibles ({{ planes.count }})</h3>
+        <a href="{% url 'plan_create' %}" class="btn btn-primary">+ Crear Plan Nutricional</a>
+    </div>
+
+    {% if planes %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre del Plan</th>
+                        <th>Objetivo</th>
+                        <th>Meta Diaria</th>
+                        <th>Alimentos</th>
+                        <th>Vigencia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in planes %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'plan_detail' plan.pk %}">
+                                <strong>{{ plan.nombre }}</strong>
+                            </a>
+                        </td>
+                        <td>{{ plan.get_objetivo_display }}</td>
+                        <td>{{ plan.calorias_diarias }} kcal</td>
+                        <td><span class="badge badge-programada">{{ plan.alimentos.count }} alimentos</span></td>
+                        <td>{{ plan.fecha_inicio|date:"d/m/Y" }} al {{ plan.fecha_fin|date:"d/m/Y" }}</td>
+                        <td class="table-actions">
+                            <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-sm btn-outline">Ver</a>
+                            <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">Aún no se han diseñado planes nutricionales.</p>
+    {% endif %}
+</div>
+{% endblock %}

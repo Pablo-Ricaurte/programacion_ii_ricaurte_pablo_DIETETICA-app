@@ -1,0 +1,21 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Eliminar Paciente | Consultorio de Dietética{% endblock %}
+{% block header_title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>¿Estás seguro de eliminar este paciente?</h3>
+    <p>
+        Vas a eliminar permanentemente el expediente de
+        <strong>{{ paciente.apellidos }} {{ paciente.nombres }}</strong> (Cédula: {{ paciente.cedula }}).
+        Esta acción también eliminará sus consultas asociadas.
+    </p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar definitivamente</button>
+        <a href="{% url 'paciente_detail' paciente.pk %}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

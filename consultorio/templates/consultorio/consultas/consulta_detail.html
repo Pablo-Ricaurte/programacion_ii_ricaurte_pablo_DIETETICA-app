@@ -1,0 +1,62 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Consulta #{{ consulta.pk }} | Consultorio de Dietética{% endblock %}
+{% block header_title %}Ficha Detallada de Consulta{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Consulta #{{ consulta.pk }} — {{ consulta.fecha_consulta|date:"d/m/Y" }}</h3>
+        <div class="actions-bar">
+            <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-warning">Editar</a>
+            <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-danger">Eliminar</a>
+            <a href="{% url 'consulta_list' %}" class="btn btn-outline">Volver a consultas</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span>Paciente:</span>
+            <strong>
+                <a href="{% url 'paciente_detail' consulta.paciente.pk %}">
+                    {{ consulta.paciente.apellidos }} {{ consulta.paciente.nombres }} ({{ consulta.paciente.cedula }})
+                </a>
+            </strong>
+        </div>
+        <div class="detail-item">
+            <span>Nutricionista:</span>
+            <strong>
+                <a href="{% url 'nutricionista_detail' consulta.nutricionista.pk %}">
+                    Lic. {{ consulta.nutricionista.nombres }} {{ consulta.nutricionista.apellidos }}
+                </a>
+            </strong>
+        </div>
+        <div class="detail-item">
+            <span>Plan Nutricional Asignado:</span>
+            <strong>
+                {% if consulta.plan_nutricional %}
+                    <a href="{% url 'plan_detail' consulta.plan_nutricional.pk %}">
+                        {{ consulta.plan_nutricional.nombre }} ({{ consulta.plan_nutricional.calorias_diarias }} kcal)
+                    </a>
+                {% else %}
+                    Sin plan asignado en esta sesión
+                {% endif %}
+            </strong>
+        </div>
+        <div class="detail-item">
+            <span>Estado de la cita:</span>
+            <strong><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></strong>
+        </div>
+        <div class="detail-item"><span>Peso registrado:</span> <strong>{{ consulta.peso_kg }} kg</strong></div>
+        <div class="detail-item"><span>Estatura:</span> <strong>{{ consulta.estatura_cm }} cm</strong></div>
+        <div class="detail-item"><span>IMC Calculado:</span> <strong>{{ consulta.imc }} kg/m²</strong></div>
+        <div class="detail-item"><span>Costo de consulta:</span> <strong>${{ consulta.costo }} USD</strong></div>
+        <div class="detail-item"><span>Registrado por:</span> <strong>{{ consulta.creado_por.username }}</strong></div>
+    </div>
+
+    <div class="detail-notes">
+        <h4>Diagnóstico y Notas Clínicas</h4>
+        <p>{{ consulta.diagnostico_notas|linebreaksbr }}</p>
+    </div>
+</div>
+{% endblock %}
