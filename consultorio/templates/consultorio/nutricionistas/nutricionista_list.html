@@ -7,7 +7,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Nutricionistas Registrados ({{ nutricionistas.count }})</h3>
-        <a href="{% url 'nutricionista_create' %}" class="btn btn-primary">+ Registrar Nutricionista</a>
+        {% if perms.consultorio.add_nutricionista %}
+            <a href="{% url 'nutricionista_create' %}" class="btn btn-primary">+ Registrar Nutricionista</a>
+        {% endif %}
     </div>
 
     {% if nutricionistas %}
@@ -43,8 +45,12 @@
                         </td>
                         <td class="table-actions">
                             <a href="{% url 'nutricionista_detail' nutri.pk %}" class="btn btn-sm btn-outline">Ver</a>
-                            <a href="{% url 'nutricionista_update' nutri.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'nutricionista_delete' nutri.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% if perms.consultorio.change_nutricionista %}
+                                <a href="{% url 'nutricionista_update' nutri.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                            {% endif %}
+                            {% if perms.consultorio.delete_nutricionista %}
+                                <a href="{% url 'nutricionista_delete' nutri.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

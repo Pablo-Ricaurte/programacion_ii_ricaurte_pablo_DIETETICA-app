@@ -1,12 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from consultorio.models import Paciente
 from consultorio.forms import PacienteForm
 
+def _puede_modificar_paciente(user, paciente):
+    if user.is_superuser or user.groups.filter(name='administradores').exists():
+        return True
+    return paciente.creado_por == user
 
+
+@login_required
+@permission_required('consultorio.view_paciente', raise_exception=True)
 def paciente_list(request):
-    pacientes = Paciente.objects.all()
+    pacientes = Paciente.objects.select_related('creado_por').all()
     return render(
         request,
         'consultorio/pacientes/paciente_list.html',
@@ -14,37 +22,33 @@ def paciente_list(request):
     )
 
 
+@login_required
+@permission_required('consultorio.view_paciente', raise_exception=True)
 def paciente_detail(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     consultas = paciente.consultas.select_related(
         'nutricionista', 'plan_nutricional'
     ).all()
+    puede_editar = _puede_modificar_paciente(request.user, paciente)
     return render(
         request,
         'consultorio/pacientes/paciente_detail.html',
         {
             'paciente': paciente,
             'consultas': consultas,
+            'puede_editar': puede_editar,
         },
     )
 
 
+@login_required
+@permission_required('consultorio.add_paciente', raise_exception=True)
 def paciente_create(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
             paciente = form.save(commit=False)
-            if request.user.is_authenticated:
-                paciente.creado_por = request.user
-            else:
-                usuario_respaldo = User.objects.first()
-                if not usuario_respaldo:
-                    messages.error(
-                        request,
-                        'Crea primero un usuario administrador para registrar pacientes.',
-                    )
-                    return redirect('paciente_list')
-                paciente.creado_por = usuario_respaldo
+            paciente.creado_por = request.user
             paciente.save()
             messages.success(request, 'Paciente registrado exitosamente.')
             return redirect('paciente_list')
@@ -58,8 +62,13 @@ def paciente_create(request):
     )
 
 
+@login_required
+@permission_required('consultorio.change_paciente', raise_exception=True)
 def paciente_update(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
+    if not _puede_modificar_paciente(request.user, paciente):
+        raise PermissionDenied
+
     if request.method == 'POST':
         form = PacienteForm(request.POST, instance=paciente)
         if form.is_valid():
@@ -76,8 +85,13 @@ def paciente_update(request, pk):
     )
 
 
+@login_required
+@permission_required('consultorio.delete_paciente', raise_exception=True)
 def paciente_delete(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
+    if not _puede_modificar_paciente(request.user, paciente):
+        raise PermissionDenied
+
     if request.method == 'POST':
         paciente.delete()
         messages.success(request, 'Paciente eliminado del sistema.')

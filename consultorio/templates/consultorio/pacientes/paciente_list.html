@@ -7,7 +7,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Listado de Pacientes ({{ pacientes.count }})</h3>
-        <a href="{% url 'paciente_create' %}" class="btn btn-primary">+ Nuevo Paciente</a>
+        {% if perms.consultorio.add_paciente %}
+            <a href="{% url 'paciente_create' %}" class="btn btn-primary">+ Nuevo Paciente</a>
+        {% endif %}
     </div>
 
     {% if pacientes %}
@@ -19,7 +21,7 @@
                         <th>Apellidos y Nombres</th>
                         <th>Sexo</th>
                         <th>Teléfono</th>
-                        <th>Correo</th>
+                        <th>Registrado por</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -34,11 +36,17 @@
                         </td>
                         <td>{{ paciente.get_sexo_display }}</td>
                         <td>{{ paciente.telefono }}</td>
-                        <td>{{ paciente.email|default:"—" }}</td>
+                        <td>{{ paciente.creado_por.username }}</td>
                         <td class="table-actions">
                             <a href="{% url 'paciente_detail' paciente.pk %}" class="btn btn-sm btn-outline">Ver</a>
-                            <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% if es_admin or paciente.creado_por == user %}
+                                {% if perms.consultorio.change_paciente %}
+                                    <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                                {% endif %}
+                                {% if perms.consultorio.delete_paciente %}
+                                    <a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                                {% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -46,7 +54,7 @@
             </table>
         </div>
     {% else %}
-        <p class="empty-state">No hay pacientes registrados. Haz clic en "+ Nuevo Paciente" para comenzar.</p>
+        <p class="empty-state">No hay pacientes registrados.</p>
     {% endif %}
 </div>
 {% endblock %}

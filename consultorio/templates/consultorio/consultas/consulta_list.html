@@ -7,7 +7,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Historial General de Consultas ({{ consultas.count }})</h3>
-        <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Programar / Registrar Consulta</a>
+        {% if perms.consultorio.add_consulta %}
+            <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Programar / Registrar Consulta</a>
+        {% endif %}
     </div>
 
     {% if consultas %}
@@ -22,6 +24,7 @@
                         <th>Peso / IMC</th>
                         <th>Costo</th>
                         <th>Estado</th>
+                        <th>Registrado por</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -51,10 +54,17 @@
                         <td>{{ consulta.peso_kg }} kg (IMC: {{ consulta.imc }})</td>
                         <td>${{ consulta.costo }}</td>
                         <td><span class="badge badge-{{ consulta.estado|lower }}">{{ consulta.get_estado_display }}</span></td>
+                        <td>{{ consulta.creado_por.username }}</td>
                         <td class="table-actions">
                             <a href="{% url 'consulta_detail' consulta.pk %}" class="btn btn-sm btn-outline">Ver</a>
-                            <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% if es_admin or consulta.creado_por == user %}
+                                {% if perms.consultorio.change_consulta %}
+                                    <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                                {% endif %}
+                                {% if perms.consultorio.delete_consulta %}
+                                    <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                                {% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -62,7 +72,7 @@
             </table>
         </div>
     {% else %}
-        <p class="empty-state">No hay consultas registradas. Haz clic en "+ Programar / Registrar Consulta".</p>
+        <p class="empty-state">No hay consultas registradas.</p>
     {% endif %}
 </div>
 {% endblock %}

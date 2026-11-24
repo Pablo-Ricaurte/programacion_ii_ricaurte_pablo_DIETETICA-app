@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import ProtectedError
 from consultorio.models import Nutricionista
 from consultorio.forms import NutricionistaForm
 
 
+@login_required
+@permission_required('consultorio.view_nutricionista', raise_exception=True)
 def nutricionista_list(request):
     nutricionistas = Nutricionista.objects.all()
     return render(
@@ -14,6 +17,8 @@ def nutricionista_list(request):
     )
 
 
+@login_required
+@permission_required('consultorio.view_nutricionista', raise_exception=True)
 def nutricionista_detail(request, pk):
     nutricionista = get_object_or_404(Nutricionista, pk=pk)
     consultas = nutricionista.consultas.select_related(
@@ -29,6 +34,8 @@ def nutricionista_detail(request, pk):
     )
 
 
+@login_required
+@permission_required('consultorio.add_nutricionista', raise_exception=True)
 def nutricionista_create(request):
     if request.method == 'POST':
         form = NutricionistaForm(request.POST)
@@ -46,6 +53,8 @@ def nutricionista_create(request):
     )
 
 
+@login_required
+@permission_required('consultorio.change_nutricionista', raise_exception=True)
 def nutricionista_update(request, pk):
     nutricionista = get_object_or_404(Nutricionista, pk=pk)
     if request.method == 'POST':
@@ -64,6 +73,8 @@ def nutricionista_update(request, pk):
     )
 
 
+@login_required
+@permission_required('consultorio.delete_nutricionista', raise_exception=True)
 def nutricionista_delete(request, pk):
     nutricionista = get_object_or_404(Nutricionista, pk=pk)
     if request.method == 'POST':

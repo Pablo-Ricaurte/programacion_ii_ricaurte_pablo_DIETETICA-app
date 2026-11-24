@@ -1,0 +1,35 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Iniciar Sesión | Consultorio de Dietética{% endblock %}
+{% block header_title %}Acceso al Sistema{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <div class="card-header">
+        <h3>Iniciar Sesión</h3>
+    </div>
+
+    <form method="post" class="styled-form" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+            <a href="{% url 'registro' %}" class="btn btn-outline">Crear cuenta nueva</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

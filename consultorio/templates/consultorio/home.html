@@ -37,10 +37,18 @@
         <h3>Accesos Rápidos</h3>
     </div>
     <div class="actions-bar">
-        <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Nueva Consulta</a>
-        <a href="{% url 'paciente_create' %}" class="btn btn-secondary">+ Registrar Paciente</a>
-        <a href="{% url 'plan_create' %}" class="btn btn-secondary">+ Crear Plan Nutricional</a>
-        <a href="{% url 'alimento_create' %}" class="btn btn-secondary">+ Agregar Alimento</a>
+        {% if perms.consultorio.add_consulta %}
+            <a href="{% url 'consulta_create' %}" class="btn btn-primary">+ Nueva Consulta</a>
+        {% endif %}
+        {% if perms.consultorio.add_paciente %}
+            <a href="{% url 'paciente_create' %}" class="btn btn-secondary">+ Registrar Paciente</a>
+        {% endif %}
+        {% if perms.consultorio.add_plannutricional %}
+            <a href="{% url 'plan_create' %}" class="btn btn-secondary">+ Crear Plan Nutricional</a>
+        {% endif %}
+        {% if perms.consultorio.add_alimento %}
+            <a href="{% url 'alimento_create' %}" class="btn btn-secondary">+ Agregar Alimento</a>
+        {% endif %}
     </div>
 </div>
 

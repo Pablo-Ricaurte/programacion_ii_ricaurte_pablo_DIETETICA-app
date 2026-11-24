@@ -19,14 +19,31 @@
                 </div>
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="{% url 'home' %}" class="nav-link">Inicio / Dashboard</a>
-                <a href="{% url 'consulta_list' %}" class="nav-link">Consultas Médicas</a>
-                <a href="{% url 'paciente_list' %}" class="nav-link">Pacientes</a>
-                <a href="{% url 'nutricionista_list' %}" class="nav-link">Nutricionistas</a>
-                <a href="{% url 'plan_list' %}" class="nav-link">Planes Nutricionales</a>
-                <a href="{% url 'alimento_list' %}" class="nav-link">Catálogo de Alimentos</a>
-            </nav>
+            {% if user.is_authenticated %}
+                <nav class="sidebar-nav">
+                    <a href="{% url 'home' %}" class="nav-link">Inicio / Dashboard</a>
+                    {% if perms.consultorio.view_consulta %}
+                        <a href="{% url 'consulta_list' %}" class="nav-link">Consultas Médicas</a>
+                    {% endif %}
+                    {% if perms.consultorio.view_paciente %}
+                        <a href="{% url 'paciente_list' %}" class="nav-link">Pacientes</a>
+                    {% endif %}
+                    {% if perms.consultorio.view_nutricionista %}
+                        <a href="{% url 'nutricionista_list' %}" class="nav-link">Nutricionistas</a>
+                    {% endif %}
+                    {% if perms.consultorio.view_plannutricional %}
+                        <a href="{% url 'plan_list' %}" class="nav-link">Planes Nutricionales</a>
+                    {% endif %}
+                    {% if perms.consultorio.view_alimento %}
+                        <a href="{% url 'alimento_list' %}" class="nav-link">Catálogo de Alimentos</a>
+                    {% endif %}
+                </nav>
+            {% else %}
+                <nav class="sidebar-nav">
+                    <a href="{% url 'login' %}" class="nav-link">Iniciar Sesión</a>
+                    <a href="{% url 'registro' %}" class="nav-link">Registrarse</a>
+                </nav>
+            {% endif %}
 
             <div class="sidebar-footer">
                 <small>Programación II · UTE</small>
@@ -40,17 +57,22 @@
                     <h1>{% block header_title %}Sistema de Consulta Dietética{% endblock %}</h1>
                 </div>
                 <div class="topbar-user">
-                    <!-- FASE 7: Bloque dinámico de autenticación (se activará al crear auth_urls.py) -->
                     {% if user.is_authenticated %}
-                        <span class="user-pill">Usuario: <strong>{{ user.username }}</strong></span>
+                        <span class="user-pill">
+                            <strong>{{ user.username }}</strong> · {{ rol_usuario }}
+                        </span>
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline">Cerrar sesión</button>
+                        </form>
                     {% else %}
-                        <span class="user-pill">Modo Desarrollo (Fase 6)</span>
+                        <a href="{% url 'login' %}" class="btn btn-sm btn-primary">Iniciar sesión</a>
+                        <a href="{% url 'registro' %}" class="btn btn-sm btn-outline">Registrarse</a>
                     {% endif %}
                 </div>
             </header>
 
             <main class="content-area">
-                <!-- Mensajes de confirmación de Django (messages) -->
                 {% if messages %}
                     <div class="messages-container">
                         {% for message in messages %}

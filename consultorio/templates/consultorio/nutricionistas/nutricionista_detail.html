@@ -8,8 +8,12 @@
     <div class="card-header">
         <h3>Lic. {{ nutricionista.nombres }} {{ nutricionista.apellidos }}</h3>
         <div class="actions-bar">
-            <a href="{% url 'nutricionista_update' nutricionista.pk %}" class="btn btn-warning">Editar</a>
-            <a href="{% url 'nutricionista_delete' nutricionista.pk %}" class="btn btn-danger">Eliminar</a>
+            {% if perms.consultorio.change_nutricionista %}
+                <a href="{% url 'nutricionista_update' nutricionista.pk %}" class="btn btn-warning">Editar</a>
+            {% endif %}
+            {% if perms.consultorio.delete_nutricionista %}
+                <a href="{% url 'nutricionista_delete' nutricionista.pk %}" class="btn btn-danger">Eliminar</a>
+            {% endif %}
             <a href="{% url 'nutricionista_list' %}" class="btn btn-outline">Volver al listado</a>
         </div>
     </div>

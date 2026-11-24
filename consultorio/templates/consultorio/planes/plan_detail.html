@@ -8,8 +8,14 @@
     <div class="card-header">
         <h3>{{ plan.nombre }}</h3>
         <div class="actions-bar">
-            <a href="{% url 'plan_update' plan.pk %}" class="btn btn-warning">Editar / Asociar Alimentos</a>
-            <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-danger">Eliminar</a>
+            {% if puede_editar %}
+                {% if perms.consultorio.change_plannutricional %}
+                    <a href="{% url 'plan_update' plan.pk %}" class="btn btn-warning">Editar / Asociar Alimentos</a>
+                {% endif %}
+                {% if perms.consultorio.delete_plannutricional %}
+                    <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-danger">Eliminar</a>
+                {% endif %}
+            {% endif %}
             <a href="{% url 'plan_list' %}" class="btn btn-outline">Volver a planes</a>
         </div>
     </div>
@@ -31,7 +37,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Alimentos Incluidos en este Plan ({{ alimentos.count }})</h3>
-        <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-primary">+ Gestionar Alimentos</a>
+        {% if puede_editar and perms.consultorio.change_plannutricional %}
+            <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-primary">+ Gestionar Alimentos</a>
+        {% endif %}
     </div>
 
     {% if alimentos %}
@@ -62,7 +70,7 @@
             </table>
         </div>
     {% else %}
-        <p class="empty-state">Este plan aún no tiene alimentos asociados. Haz clic en "Gestionar Alimentos" para seleccionarlos.</p>
+        <p class="empty-state">Este plan aún no tiene alimentos asociados.</p>
     {% endif %}
 </div>
 

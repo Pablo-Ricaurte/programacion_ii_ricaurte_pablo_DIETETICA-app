@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
 from consultorio.models import Alimento
 from consultorio.forms import AlimentoForm
 
 
+@login_required
+@permission_required('consultorio.view_alimento', raise_exception=True)
 def alimento_list(request):
     alimentos = Alimento.objects.all()
     return render(
@@ -13,6 +16,8 @@ def alimento_list(request):
     )
 
 
+@login_required
+@permission_required('consultorio.view_alimento', raise_exception=True)
 def alimento_detail(request, pk):
     alimento = get_object_or_404(Alimento, pk=pk)
     planes = alimento.planes_nutricionales.all()
@@ -26,6 +31,8 @@ def alimento_detail(request, pk):
     )
 
 
+@login_required
+@permission_required('consultorio.add_alimento', raise_exception=True)
 def alimento_create(request):
     if request.method == 'POST':
         form = AlimentoForm(request.POST)
@@ -43,6 +50,8 @@ def alimento_create(request):
     )
 
 
+@login_required
+@permission_required('consultorio.change_alimento', raise_exception=True)
 def alimento_update(request, pk):
     alimento = get_object_or_404(Alimento, pk=pk)
     if request.method == 'POST':
@@ -61,6 +70,8 @@ def alimento_update(request, pk):
     )
 
 
+@login_required
+@permission_required('consultorio.delete_alimento', raise_exception=True)
 def alimento_delete(request, pk):
     alimento = get_object_or_404(Alimento, pk=pk)
     if request.method == 'POST':

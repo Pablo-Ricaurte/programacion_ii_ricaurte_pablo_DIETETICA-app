@@ -1,0 +1,17 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Acceso Denegado (403) | Consultorio de Dietética{% endblock %}
+{% block header_title %}Acceso Restringido{% endblock %}
+
+{% block content %}
+<div class="card confirm-card">
+    <h3>403 — No tienes permisos para realizar esta acción</h3>
+    <p>
+        Tu rol actual (<strong>{{ rol_usuario }}</strong>) no cuenta con autorización para acceder a este recurso
+        o estás intentando modificar un registro que pertenece a otro usuario.
+    </p>
+    <div class="form-actions" style="margin-top: 1rem;">
+        <a href="{% url 'home' %}" class="btn btn-primary">Volver al Dashboard</a>
+    </div>
+</div>
+{% endblock %}

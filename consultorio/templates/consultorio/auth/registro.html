@@ -1,0 +1,38 @@
+{% extends 'consultorio/base.html' %}
+
+{% block title %}Registro de Usuario | Consultorio de Dietética{% endblock %}
+{% block header_title %}Crear Cuenta en el Consultorio{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <div class="card-header">
+        <h3>Registro de Nuevo Usuario</h3>
+    </div>
+
+    <form method="post" class="styled-form" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small class="form-help">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <span class="field-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Registrarme</button>
+            <a href="{% url 'login' %}" class="btn btn-outline">Ya tengo cuenta</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

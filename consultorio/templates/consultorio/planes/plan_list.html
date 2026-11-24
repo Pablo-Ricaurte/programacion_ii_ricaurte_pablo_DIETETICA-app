@@ -7,7 +7,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Planes Disponibles ({{ planes.count }})</h3>
-        <a href="{% url 'plan_create' %}" class="btn btn-primary">+ Crear Plan Nutricional</a>
+        {% if perms.consultorio.add_plannutricional %}
+            <a href="{% url 'plan_create' %}" class="btn btn-primary">+ Crear Plan Nutricional</a>
+        {% endif %}
     </div>
 
     {% if planes %}
@@ -20,6 +22,7 @@
                         <th>Meta Diaria</th>
                         <th>Alimentos</th>
                         <th>Vigencia</th>
+                        <th>Creado por</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -35,10 +38,17 @@
                         <td>{{ plan.calorias_diarias }} kcal</td>
                         <td><span class="badge badge-programada">{{ plan.alimentos.count }} alimentos</span></td>
                         <td>{{ plan.fecha_inicio|date:"d/m/Y" }} al {{ plan.fecha_fin|date:"d/m/Y" }}</td>
+                        <td>{{ plan.creado_por.username }}</td>
                         <td class="table-actions">
                             <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-sm btn-outline">Ver</a>
-                            <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% if es_admin or plan.creado_por == user %}
+                                {% if perms.consultorio.change_plannutricional %}
+                                    <a href="{% url 'plan_update' plan.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                                {% endif %}
+                                {% if perms.consultorio.delete_plannutricional %}
+                                    <a href="{% url 'plan_delete' plan.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                                {% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

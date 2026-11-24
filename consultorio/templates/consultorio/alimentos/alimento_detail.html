@@ -8,8 +8,12 @@
     <div class="card-header">
         <h3>{{ alimento.nombre }}</h3>
         <div class="actions-bar">
-            <a href="{% url 'alimento_update' alimento.pk %}" class="btn btn-warning">Editar</a>
-            <a href="{% url 'alimento_delete' alimento.pk %}" class="btn btn-danger">Eliminar</a>
+            {% if perms.consultorio.change_alimento %}
+                <a href="{% url 'alimento_update' alimento.pk %}" class="btn btn-warning">Editar</a>
+            {% endif %}
+            {% if perms.consultorio.delete_alimento %}
+                <a href="{% url 'alimento_delete' alimento.pk %}" class="btn btn-danger">Eliminar</a>
+            {% endif %}
             <a href="{% url 'alimento_list' %}" class="btn btn-outline">Volver al catálogo</a>
         </div>
     </div>

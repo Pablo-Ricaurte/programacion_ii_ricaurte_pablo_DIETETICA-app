@@ -8,8 +8,14 @@
     <div class="card-header">
         <h3>Consulta #{{ consulta.pk }} — {{ consulta.fecha_consulta|date:"d/m/Y" }}</h3>
         <div class="actions-bar">
-            <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-warning">Editar</a>
-            <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-danger">Eliminar</a>
+            {% if puede_editar %}
+                {% if perms.consultorio.change_consulta %}
+                    <a href="{% url 'consulta_update' consulta.pk %}" class="btn btn-warning">Editar</a>
+                {% endif %}
+                {% if perms.consultorio.delete_consulta %}
+                    <a href="{% url 'consulta_delete' consulta.pk %}" class="btn btn-danger">Eliminar</a>
+                {% endif %}
+            {% endif %}
             <a href="{% url 'consulta_list' %}" class="btn btn-outline">Volver a consultas</a>
         </div>
     </div>

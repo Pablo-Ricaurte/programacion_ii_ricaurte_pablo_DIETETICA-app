@@ -8,8 +8,14 @@
     <div class="card-header">
         <h3>{{ paciente.apellidos }} {{ paciente.nombres }}</h3>
         <div class="actions-bar">
-            <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-warning">Editar</a>
-            <a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-danger">Eliminar</a>
+            {% if puede_editar %}
+                {% if perms.consultorio.change_paciente %}
+                    <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-warning">Editar</a>
+                {% endif %}
+                {% if perms.consultorio.delete_paciente %}
+                    <a href="{% url 'paciente_delete' paciente.pk %}" class="btn btn-danger">Eliminar</a>
+                {% endif %}
+            {% endif %}
             <a href="{% url 'paciente_list' %}" class="btn btn-outline">Volver al listado</a>
         </div>
     </div>
@@ -32,7 +38,9 @@
 <div class="card">
     <div class="card-header">
         <h3>Historial de Consultas ({{ consultas.count }})</h3>
-        <a href="{% url 'consulta_create' %}" class="btn btn-sm btn-primary">+ Programar Consulta</a>
+        {% if perms.consultorio.add_consulta %}
+            <a href="{% url 'consulta_create' %}" class="btn btn-sm btn-primary">+ Programar Consulta</a>
+        {% endif %}
     </div>
 
     {% if consultas %}
