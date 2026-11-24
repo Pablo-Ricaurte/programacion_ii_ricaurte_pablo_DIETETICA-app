@@ -1,0 +1,6 @@
+from consultorio.forms.paciente_form import PacienteForm
+from consultorio.forms.nutricionista_form import NutricionistaForm
+from consultorio.forms.alimento_form import AlimentoForm
+from consultorio.forms.plan_nutricional_form import PlanNutricionalForm
+from consultorio.forms.consulta_form import ConsultaForm
+from consultorio.forms.registro_form import RegistroForm
