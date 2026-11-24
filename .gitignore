@@ -1,0 +1,20 @@
+# Entorno virtual
+venv/
+.venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Base de datos SQLite local (se regenera con migrate y poblar_datos)
+db.sqlite3
+db.sqlite3-journal
+
+# Variables de entorno y configuraciones de editores
+.env
+.vscode/
+.idea/
+*.swp
+.DS_Store
