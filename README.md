@@ -180,7 +180,7 @@ El sistema cuenta con **5 tablas de negocio** (más la tabla intermedia generada
 
 1. **Clonar el repositorio y ubicarse en la carpeta del proyecto:**
    ```bash
-   git clone [https://github.com/Pablo-Ricaurte/programacion_ii_ricaurte_pablo.git](https://github.com/Pablo-Ricaurte/programacion_ii_ricaurte_pablo.git)
+   git clone https://github.com/Pablo-Ricaurte/programacion_ii_ricaurte_pablo_DIETETICA-app.git
    cd programacion_ii_ricaurte_pablo/dietetica-app
    ```
 
